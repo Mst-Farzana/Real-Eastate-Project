@@ -1,0 +1,151 @@
+.page {
+  min-height: 100vh;
+  background: #1c2927;
+  color: #f4f1eb;
+}
+.header {
+  max-width: 1240px;
+  margin: auto;
+  padding: 24px 32px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.brand {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  color: #f4f1eb;
+  font:
+    700 20px Georgia,
+    serif;
+}
+.brandMark {
+  width: 28px;
+  height: 28px;
+  display: grid;
+  place-items: center;
+  background: #f4f1eb;
+  color: #1c2927;
+  font-size: 16px;
+}
+.brand span {
+  font-weight: 600;
+}
+.brand .brandMark {
+  flex: 0 0 28px;
+  font-weight: 700;
+}
+.brand span span {
+  color: #d28a63;
+}
+.back {
+  color: #b2bbb5;
+  font-size: 13px;
+}
+.back span {
+  margin-left: 10px;
+  color: #d28a63;
+}
+.intro {
+  max-width: 1240px;
+  margin: auto;
+  padding: 90px 32px 70px;
+}
+.eyebrow {
+  color: #d28a63;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+.intro h1 {
+  margin: 18px 0 25px;
+  font:
+    400 clamp(48px, 7vw, 88px) / 0.95 Georgia,
+    serif;
+  letter-spacing: -3px;
+}
+.intro h1 em {
+  color: #aab7ac;
+}
+.intro > p:last-child {
+  max-width: 430px;
+  color: #b2bbb5;
+  font-size: 14px;
+  line-height: 1.7;
+}
+.grid {
+  max-width: 1240px;
+  margin: auto;
+  padding: 0 32px 120px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+.card {
+  min-width: 0;
+  min-height: 300px;
+  padding: 30px;
+  background: #263735;
+}
+.avatar {
+  width: 64px;
+  height: 64px;
+  display: grid;
+  place-items: center;
+  margin-bottom: 45px;
+  background: #d28a63;
+  color: #1c2927;
+  font:
+    24px Georgia,
+    serif;
+}
+.role {
+  color: #d28a63;
+  font-size: 10px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+}
+.card h2 {
+  margin: 12px 0 9px;
+  font:
+    30px Georgia,
+    serif;
+}
+.contact {
+  color: #b2bbb5;
+  font-size: 12px;
+}
+.email {
+  display: inline-block;
+  margin-top: 28px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid #78837b;
+  color: #f4f1eb;
+  font-size: 12px;
+}
+.error,
+.empty {
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 0 32px 80px;
+  color: #d28a63;
+}
+.empty {
+  color: #b2bbb5;
+}
+@media (max-width: 760px) {
+  .header,
+  .intro,
+  .grid {
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+  .intro {
+    padding-top: 60px;
+  }
+  .grid {
+    grid-template-columns: 1fr;
+  }
+}
