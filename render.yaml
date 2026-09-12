@@ -1,0 +1,15 @@
+services:
+  - type: web
+    name: real-estate-api
+    runtime: docker
+    dockerfilePath: ./backend/dockerfile
+    dockerContext: ./backend
+    plan: free
+    healthCheckPath: /up
+    envVars:
+      - key: APP_ENV
+        value: production
+      - key: APP_DEBUG
+        value: "false"
+      - key: APP_KEY
+        generateValue: true
