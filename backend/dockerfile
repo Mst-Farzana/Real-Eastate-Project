@@ -41,8 +41,9 @@ COPY . /var/www/html
 # Install dependencies
 RUN composer install --no-dev --optimize-autoloader
 
-# Generate key and set permissions
-RUN php artisan key:generate --force && \
+# Generate key and set permissions (এখানে পরিবর্তন করা হয়েছে)
+RUN cp .env.example .env && \
+    php artisan key:generate --force && \
     mkdir -p storage/framework/{sessions,views,cache} && \
     chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache && \
     chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
