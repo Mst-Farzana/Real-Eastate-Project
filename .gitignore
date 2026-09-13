@@ -65,3 +65,4 @@ Thumbs.db
 *.tsbuildinfo
 next-env.d.ts
 .npmrc
+!/frontend/.npmrc
