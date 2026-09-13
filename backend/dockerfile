@@ -8,11 +8,12 @@ RUN apt-get update && apt-get install -y \
     libonig-dev \
     libxml2-dev \
     libzip-dev \
+    libpq-dev \
     zip \
     unzip
 
-# Install PHP extensions
-RUN docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd zip
+# Install PHP extensions (MySQL + PostgreSQL সহ)
+RUN docker-php-ext-install pdo_mysql pdo_pgsql mbstring exif pcntl bcmath gd zip
 
 # Enable Apache mod_rewrite
 RUN a2enmod rewrite
@@ -22,24 +23,31 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
 WORKDIR /var/www/html
 
+# Set Apache to use PORT environment variable
 ENV APACHE_DOCUMENT_ROOT=/var/www/html/public
+ENV PORT=10000
 
 RUN sed -ri -e "s!/var/www/html!${APACHE_DOCUMENT_ROOT}!g" \
     /etc/apache2/sites-available/*.conf \
     /etc/apache2/apache2.conf \
     /etc/apache2/conf-available/*.conf
 
-# Copy existing application directory
+# Change Apache port to use $PORT
+RUN sed -i "s/Listen 80/Listen ${PORT}/g" /etc/apache2/ports.conf
+
+# Copy application
 COPY . /var/www/html
 
 # Install dependencies
 RUN composer install --no-dev --optimize-autoloader
 
-# Set permissions
-RUN chown -R www-data:www-data /var/www/html \
-    && chmod -R 755 /var/www/html/storage
+# Generate key and set permissions
+RUN php artisan key:generate --force && \
+    mkdir -p storage/framework/{sessions,views,cache} && \
+    chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache && \
+    chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
 
-EXPOSE 80
+EXPOSE ${PORT}
 
-# Start Apache server
+# Start Apache
 CMD ["apache2-foreground"]
