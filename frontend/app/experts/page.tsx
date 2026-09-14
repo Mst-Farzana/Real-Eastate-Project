@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import styles from "./page.module.css";
+import { apiUrl } from "../api";
 
 type Agent = {
   id: number;
@@ -10,8 +11,6 @@ type Agent = {
   email: string;
   published_properties_count: number;
 };
-const apiUrl = process.env.NEXT_PUBLIC_API_URL ?? "http://127.0.0.1:8000/api";
-
 export default function ExpertsPage() {
   const [agents, setAgents] = useState<Agent[]>([]);
   const [error, setError] = useState("");

@@ -6,6 +6,7 @@ import { FormEvent, useEffect, useEffectEvent, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import styles from "./page.module.css";
 import { RootState, toggleSavedHome } from "./store";
+import { apiUrl } from "./api";
 
 type Property = {
   id: number;
@@ -22,8 +23,6 @@ type Property = {
   country: string;
   images?: { url: string }[];
 };
-
-const apiUrl = process.env.NEXT_PUBLIC_API_URL ?? "http://127.0.0.1:8000/api";
 
 const formatPrice = (property: Property) =>
   new Intl.NumberFormat("en-US", {

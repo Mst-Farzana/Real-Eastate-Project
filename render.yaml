@@ -13,3 +13,5 @@ services:
         value: "false"
       - key: APP_KEY
         generateValue: true
+      - key: FRONTEND_URL
+        value: https://real-eastate-project-gules.vercel.app

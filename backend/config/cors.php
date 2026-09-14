@@ -7,7 +7,10 @@ return [
     'allowed_methods' => ['*'],
 
 
-    'allowed_origins' => [env('FRONTEND_URL', 'http://localhost:3000')],
+    'allowed_origins' => array_values(array_filter(array_map(
+        'trim',
+        explode(',', env('FRONTEND_URL', 'http://localhost:3000'))
+    ))),
 
     'allowed_origins_patterns' => [],
     'allowed_headers' => ['*'],
