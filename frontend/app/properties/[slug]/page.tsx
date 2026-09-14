@@ -3,8 +3,8 @@
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { FormEvent, useEffect, useState } from "react";
-import styles from "./page.module.css";
 import { apiUrl } from "../../api";
+import styles from "./page.module.css";
 
 type Property = {
   title: string;

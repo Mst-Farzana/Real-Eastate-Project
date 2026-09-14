@@ -2,8 +2,8 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import styles from "./page.module.css";
 import { apiUrl } from "../api";
+import styles from "./page.module.css";
 
 type Agent = {
   id: number;

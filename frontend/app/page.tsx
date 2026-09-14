@@ -4,9 +4,9 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { FormEvent, useEffect, useEffectEvent, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { apiUrl } from "./api";
 import styles from "./page.module.css";
 import { RootState, toggleSavedHome } from "./store";
-import { apiUrl } from "./api";
 
 type Property = {
   id: number;
