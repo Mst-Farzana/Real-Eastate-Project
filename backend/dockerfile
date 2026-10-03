@@ -12,7 +12,7 @@ RUN apt-get update && apt-get install -y \
     zip \
     unzip
 
-# Install PHP extensions (MySQL + PostgreSQL সহ)
+# Install PHP extensions
 RUN docker-php-ext-install pdo_mysql pdo_pgsql mbstring exif pcntl bcmath gd zip
 
 # Enable Apache mod_rewrite
@@ -42,14 +42,38 @@ COPY . /var/www/html
 # Install dependencies
 RUN composer install --no-dev --optimize-autoloader
 
-# Generate key and set permissions (এখানে পরিবর্তন করা হয়েছে)
-RUN cp .env.example .env && \
-    php artisan key:generate --force && \
-    mkdir -p storage/framework/{sessions,views,cache} && \
+# Set permissions
+RUN mkdir -p storage/framework/{sessions,views,cache} && \
     chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache && \
     chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
 
+# Create startup script to inject environment variables
+RUN echo '#!/bin/bash\n\
+# Copy .env.example if .env does not exist\n\
+if [ ! -f .env ]; then\n\
+    cp .env.example .env\n\
+fi\n\
+\n\
+# Export all environment variables to .env file\n\
+for var in $(env | grep -v "^_=" | grep "="); do\n\
+    key=$(echo $var | cut -d= -f1)\n\
+    value=$(echo $var | cut -d= -f2-)\n\
+    if grep -q "^${key}=" .env; then\n\
+        sed -i "s|^${key}=.*|${key}=${value}|" .env\n\
+    else\n\
+        echo "${key}=${value}" >> .env\n\
+    fi\n\
+done\n\
+\n\
+# Clear config cache\n\
+php artisan config:clear\n\
+php artisan cache:clear\n\
+\n\
+# Start Apache\n\
+apache2-foreground' > /usr/local/bin/start.sh && \
+    chmod +x /usr/local/bin/start.sh
+
 EXPOSE ${PORT}
 
-# Start Apache
-CMD ["apache2-foreground"]
+# Use startup script instead of direct Apache start
+CMD ["/usr/local/bin/start.sh"]
