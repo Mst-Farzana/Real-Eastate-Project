@@ -1,79 +1,33 @@
-FROM php:8.4-apache
+FROM php:8.2-fpm
 
 # Install system dependencies
 RUN apt-get update && apt-get install -y \
-    git \
-    curl \
-    libpng-dev \
-    libonig-dev \
-    libxml2-dev \
-    libzip-dev \
-    libpq-dev \
-    zip \
-    unzip
+    git curl libpng-dev libonig-dev libxml2-dev zip unzip nginx supervisor
 
 # Install PHP extensions
-RUN docker-php-ext-install pdo_mysql pdo_pgsql mbstring exif pcntl bcmath gd zip
-
-# Enable Apache mod_rewrite
-RUN a2enmod rewrite
-RUN sed -i '/<Directory \/var\/www\/>/,/<\/Directory>/ s/AllowOverride None/AllowOverride All/' /etc/apache2/apache2.conf
+RUN docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd
 
 # Install Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
+# Set working directory
 WORKDIR /var/www/html
 
-# Set Apache to use PORT environment variable
-ENV APACHE_DOCUMENT_ROOT=/var/www/html/public
-ENV PORT=10000
-
-RUN sed -ri -e "s!/var/www/html!${APACHE_DOCUMENT_ROOT}!g" \
-    /etc/apache2/sites-available/*.conf \
-    /etc/apache2/apache2.conf \
-    /etc/apache2/conf-available/*.conf
-
-# Change Apache port to use $PORT
-RUN sed -i "s/Listen 80/Listen ${PORT}/g" /etc/apache2/ports.conf
-
-# Copy application
-COPY . /var/www/html
+# Copy application files
+COPY . .
 
 # Install dependencies
 RUN composer install --no-dev --optimize-autoloader
 
 # Set permissions
-RUN mkdir -p storage/framework/{sessions,views,cache} && \
-    chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache && \
-    chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
+RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
 
-# Create startup script to inject environment variables
-RUN echo '#!/bin/bash\n\
-# Copy .env.example if .env does not exist\n\
-if [ ! -f .env ]; then\n\
-    cp .env.example .env\n\
-fi\n\
-\n\
-# Export all environment variables to .env file\n\
-for var in $(env | grep -v "^_=" | grep "="); do\n\
-    key=$(echo $var | cut -d= -f1)\n\
-    value=$(echo $var | cut -d= -f2-)\n\
-    if grep -q "^${key}=" .env; then\n\
-        sed -i "s|^${key}=.*|${key}=${value}|" .env\n\
-    else\n\
-        echo "${key}=${value}" >> .env\n\
-    fi\n\
-done\n\
-\n\
-# Clear config cache\n\
-php artisan config:clear\n\
-php artisan cache:clear\n\
-\n\
-# Start Apache\n\
-apache2-foreground' > /usr/local/bin/start.sh && \
-    chmod +x /usr/local/bin/start.sh
+# Copy Nginx config
+COPY nginx.conf /etc/nginx/sites-available/default
 
-EXPOSE ${PORT}
+# Copy supervisor config
+COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
-# Use startup script instead of direct Apache start
-CMD ["/usr/local/bin/start.sh"]
+EXPOSE 80
+
+CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
