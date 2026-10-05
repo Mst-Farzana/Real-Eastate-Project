@@ -1,5 +1,8 @@
-# PHP ভার্সন 8.2 থেকে 8.4 করা হলো
+# PHP ভার্সন 8.4
 FROM php:8.4-fpm
+
+# Docker Cache ফোর্স করে রি-বিল্ড করার জন্য
+ARG CACHEBUST=1
 
 # Install system dependencies
 RUN apt-get update && apt-get install -y \
@@ -29,6 +32,12 @@ COPY nginx.conf /etc/nginx/sites-available/default
 # Copy supervisor config
 COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
-EXPOSE 80
+# Copy entrypoint script for auto-migration
+COPY entrypoint.sh /usr/local/bin/entrypoint.sh
+RUN chmod +x /usr/local/bin/entrypoint.sh
 
-CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
+# Render এর জন্য পোর্ট 10000 এক্সপোজ করা হলো
+EXPOSE 10000
+
+# entrypoint.sh রান করুন (অটো মাইগ্রেশন সহ)
+ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
