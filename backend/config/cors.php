@@ -1,10 +1,9 @@
 <?php
 
 return [
-    'paths' => ['api/*', 'sanctum/csrf-cookie', '*'],
+    'paths' => ['api/*', 'sanctum/csrf-cookie'], // '*' বাদ দিয়েছেন
 
     'allowed_methods' => ['*'],
-
 
     'allowed_origins' => [
         'https://real-eastate-project-gules.vercel.app',
