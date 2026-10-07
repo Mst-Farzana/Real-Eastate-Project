@@ -16,7 +16,9 @@ return [
         ],
     ))),
 
-    'allowed_origins_patterns' => [],
+    'allowed_origins_patterns' => [
+        '#^https://real-eastate-project-[a-z0-9-]+-mst-farzanas-projects\.vercel\.app$#',
+    ],
 
     'allowed_headers' => ['*'],
 
