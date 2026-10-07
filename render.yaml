@@ -15,3 +15,13 @@ services:
         generateValue: true
       - key: FRONTEND_URL
         value: https://real-eastate-project-gules.vercel.app
+      - key: DB_CONNECTION
+        value: mysql
+      - key: DB_URL
+        sync: false
+      - key: MYSQL_ATTR_SSL_CA
+        value: /etc/secrets/ca.pem
+      - key: MYSQL_ATTR_SSL_VERIFY_SERVER_CERT
+        value: "true"
+      - key: SEED_DEMO_DATA
+        value: "false"

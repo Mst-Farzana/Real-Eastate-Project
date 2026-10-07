@@ -12,6 +12,7 @@ return Application::configure(basePath: dirname(__DIR__))
         commands: __DIR__.'/../routes/console.php',
         health: '/up',
     )
+    ->withCommands([__DIR__.'/../app/Console/Commands'])
     ->withMiddleware(function (Middleware $middleware): void {
         // এই লাইনটি যোগ করা হলো যাতে সব রিকোয়েস্টে CORS হেডার যুক্ত হয়
         $middleware->append(\Illuminate\Http\Middleware\HandleCors::class);

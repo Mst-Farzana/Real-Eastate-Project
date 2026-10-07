@@ -28,12 +28,15 @@ class PropertySeeder extends Seeder
         ];
 
         foreach ($listings as $listing) {
-            $property = Property::updateOrCreate(['slug' => $listing['slug']], [
+            $property = Property::firstOrCreate(['slug' => $listing['slug']], [
                 ...collect($listing)->except(['image', 'alt'])->all(),
                 'status' => 'published', 'published_at' => now(),
             ]);
-            $property->amenities()->sync($amenities->pluck('id'));
-            $property->images()->updateOrCreate(['url' => $listing['image']], ['alt_text' => $listing['alt'], 'is_cover' => true]);
+            $property->amenities()->syncWithoutDetaching($amenities->pluck('id'));
+            $property->images()->firstOrCreate(
+                ['url' => $listing['image']],
+                ['alt_text' => $listing['alt'], 'is_cover' => true],
+            );
         }
     }
 }

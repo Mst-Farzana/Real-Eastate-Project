@@ -6,10 +6,10 @@ ARG CACHEBUST=1
 
 # Install system dependencies
 RUN apt-get update && apt-get install -y \
-    git curl libpng-dev libonig-dev libxml2-dev zip unzip nginx supervisor libpq-dev
+    git curl libpng-dev libonig-dev libxml2-dev zip unzip nginx supervisor libpq-dev libsqlite3-dev
 
 # Install PHP extensions (MySQL এবং PostgreSQL উভয়ের জন্য)
-RUN docker-php-ext-install pdo pdo_mysql pdo_pgsql mbstring exif pcntl bcmath gd
+RUN docker-php-ext-install pdo pdo_sqlite pdo_mysql pdo_pgsql mbstring exif pcntl bcmath gd
 
 # Install Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer

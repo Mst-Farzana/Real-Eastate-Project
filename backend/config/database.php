@@ -61,6 +61,34 @@ return [
             'engine' => null,
             'options' => extension_loaded('pdo_mysql') ? array_filter([
                 Mysql::ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA'),
+                Mysql::ATTR_SSL_VERIFY_SERVER_CERT => filter_var(
+                    env('MYSQL_ATTR_SSL_VERIFY_SERVER_CERT', false),
+                    FILTER_VALIDATE_BOOL,
+                ),
+            ]) : [],
+        ],
+
+        'tidb' => [
+            'driver' => 'mysql',
+            'url' => env('TIDB_URL'),
+            'host' => env('TIDB_HOST', '127.0.0.1'),
+            'port' => env('TIDB_PORT', '4000'),
+            'database' => env('TIDB_DATABASE', 'real_estate'),
+            'username' => env('TIDB_USERNAME', ''),
+            'password' => env('TIDB_PASSWORD', ''),
+            'unix_socket' => '',
+            'charset' => 'utf8mb4',
+            'collation' => 'utf8mb4_unicode_ci',
+            'prefix' => '',
+            'prefix_indexes' => true,
+            'strict' => true,
+            'engine' => null,
+            'options' => extension_loaded('pdo_mysql') ? array_filter([
+                Mysql::ATTR_SSL_CA => env('TIDB_SSL_CA'),
+                Mysql::ATTR_SSL_VERIFY_SERVER_CERT => filter_var(
+                    env('TIDB_SSL_VERIFY_SERVER_CERT', false),
+                    FILTER_VALIDATE_BOOL,
+                ),
             ]) : [],
         ],
 
