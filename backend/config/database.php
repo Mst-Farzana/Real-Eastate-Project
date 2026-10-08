@@ -70,7 +70,7 @@ return [
 
         'tidb' => [
             'driver' => 'mysql',
-            'url' => env('TIDB_URL'),
+            'url' => env('TIDB_HOST') ? null : env('TIDB_URL'),
             'host' => env('TIDB_HOST', '127.0.0.1'),
             'port' => env('TIDB_PORT', '4000'),
             'database' => env('TIDB_DATABASE', 'real_estate'),

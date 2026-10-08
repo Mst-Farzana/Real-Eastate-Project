@@ -25,7 +25,15 @@ services:
         value: file
       - key: CACHE_STORE
         value: file
-      - key: TIDB_URL
+      - key: TIDB_HOST
+        sync: false
+      - key: TIDB_PORT
+        value: "4000"
+      - key: TIDB_DATABASE
+        value: real_estate
+      - key: TIDB_USERNAME
+        sync: false
+      - key: TIDB_PASSWORD
         sync: false
       - key: TIDB_SSL_CA
         value: /etc/secrets/ca.pem

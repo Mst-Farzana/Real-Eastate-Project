@@ -3,7 +3,7 @@ set -euo pipefail
 
 # Prefer TiDB when configured, while keeping SQLite as the local/development fallback.
 if [ -z "${DB_CONNECTION:-}" ]; then
-    if [ -n "${TIDB_URL:-}" ]; then
+    if [ -n "${TIDB_HOST:-}" ] || [ -n "${TIDB_URL:-}" ]; then
         export DB_CONNECTION=tidb
     else
         export DB_CONNECTION=sqlite
