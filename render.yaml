@@ -11,6 +11,10 @@ services:
         value: production
       - key: APP_DEBUG
         value: "false"
+      - key: LOG_CHANNEL
+        value: stderr
+      - key: LOG_LEVEL
+        value: error
       - key: APP_KEY
         generateValue: true
       - key: FRONTEND_URL
