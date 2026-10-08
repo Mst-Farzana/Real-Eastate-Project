@@ -1,9 +1,14 @@
 #!/bin/bash
 set -euo pipefail
 
-# Use a local SQLite database for the free portfolio deployment unless a
-# different connection has explicitly been configured in Render.
-export DB_CONNECTION="${DB_CONNECTION:-sqlite}"
+# Prefer TiDB when configured, while keeping SQLite as the local/development fallback.
+if [ -z "${DB_CONNECTION:-}" ]; then
+    if [ -n "${TIDB_URL:-}" ]; then
+        export DB_CONNECTION=tidb
+    else
+        export DB_CONNECTION=sqlite
+    fi
+fi
 
 if [ "$DB_CONNECTION" = "sqlite" ]; then
     export DB_DATABASE="${DB_DATABASE:-/var/www/html/database/database.sqlite}"
