@@ -1,15 +1,11 @@
-# PHP ভার্সন 8.4
-FROM php:8.4-fpm
-
-# Docker Cache ফোর্স করে রি-বিল্ড করার জন্য
-ARG CACHEBUST=1
+FROM php:8.2-fpm
 
 # Install system dependencies
 RUN apt-get update && apt-get install -y \
     git curl libpng-dev libonig-dev libxml2-dev zip unzip nginx supervisor libpq-dev libsqlite3-dev
 
-# Install PHP extensions (MySQL এবং PostgreSQL উভয়ের জন্য)
-RUN docker-php-ext-install pdo pdo_sqlite pdo_mysql pdo_pgsql mbstring exif pcntl bcmath gd
+# Install PHP extensions
+RUN docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd
 
 # Install Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
@@ -20,24 +16,24 @@ WORKDIR /var/www/html
 # Copy application files
 COPY . .
 
-# Install dependencies
-RUN composer install --no-dev --optimize-autoloader
+# Install dependencies WITHOUT running scripts (important!)
+RUN composer install --no-dev --optimize-autoloader --no-scripts
 
 # Set permissions
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
 
-# Copy Nginx config
+# Copy configuration files
 COPY nginx.conf /etc/nginx/sites-available/default
-
-# Copy supervisor config
 COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
-
-# Copy entrypoint script for auto-migration
 COPY entrypoint.sh /usr/local/bin/entrypoint.sh
 RUN chmod +x /usr/local/bin/entrypoint.sh
 
-# Render এর জন্য পোর্ট 10000 এক্সপোজ করা হলো
+# Copy SSL certificate for TiDB
+COPY ca.pem /etc/secrets/ca.pem
+RUN chmod 644 /etc/secrets/ca.pem
+
+# Expose port
 EXPOSE 10000
 
-# entrypoint.sh রান করুন (অটো মাইগ্রেশন সহ)
-ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
+# Start services
+CMD ["/usr/local/bin/entrypoint.sh"]
