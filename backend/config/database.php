@@ -27,27 +27,26 @@ return [
         ],
 
         'mysql' => [
-            'driver' => 'mysql',
-            'url' => env('DATABASE_URL'),
-            'host' => env('DB_HOST', '127.0.0.1'),
-            'port' => (int) env('DB_PORT', '3306'),
-            'database' => env('DB_DATABASE', 'forge'),
-            'username' => env('DB_USERNAME', 'forge'),
-            'password' => env('DB_PASSWORD', ''),
-            'unix_socket' => env('DB_SOCKET', ''),
-            'charset' => 'utf8mb4',
-            'collation' => 'utf8mb4_unicode_ci',
-            'prefix' => '',
-            'prefix_indexes' => true,
-            'strict' => true,
-            'engine' => null,
-            'options' => extension_loaded('pdo_mysql') ? array_filter([
-                // এখানে DB_SSL_CA না পেলে TIDB_SSL_CA চেক করবে, না পেলে ডিফল্ট পাথ নেবে
-                PDO::MYSQL_ATTR_SSL_CA => env('DB_SSL_CA', env('TIDB_SSL_CA', '/etc/secrets/ca.pem')),
-                PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT => filter_var(env('DB_SSL_VERIFY_SERVER_CERT', env('TIDB_SSL_VERIFY_SERVER_CERT', 'true')), FILTER_VALIDATE_BOOLEAN),
-            ]) : [],
-        ],
-
+    'driver' => 'mysql',
+    'url' => env('DB_URL', env('DATABASE_URL')),
+    'host' => env('DB_HOST', '127.0.0.1'),
+    'port' => (int) env('DB_PORT', '4000'), // TiDB-এর জন্য 4000 ডিফল্ট করুন
+    'database' => env('DB_DATABASE', 'forge'),
+    'username' => env('DB_USERNAME', 'forge'),
+    'password' => env('DB_PASSWORD', ''),
+    'unix_socket' => env('DB_SOCKET', ''),
+    'charset' => 'utf8mb4',
+    'collation' => 'utf8mb4_unicode_ci',
+    'prefix' => '',
+    'prefix_indexes' => true,
+    'strict' => true,
+    'engine' => null,
+    'options' => extension_loaded('pdo_mysql') ? [
+        // Render-এর সিস্টেম CA পাথ ব্যবহার করুন
+        PDO::MYSQL_ATTR_SSL_CA => env('DB_SSL_CA', '/etc/ssl/certs/ca-certificates.crt'),
+        PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT => true,
+    ] : [],
+],
         'pgsql' => [
             'driver' => 'pgsql',
             'url' => env('DATABASE_URL'),

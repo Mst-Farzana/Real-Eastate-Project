@@ -1,4 +1,5 @@
 #!/bin/bash
+set -euo pipefail
 
 # Wait for database to be ready
 echo "Waiting for database to be ready..."
