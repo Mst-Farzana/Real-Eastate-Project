@@ -35,4 +35,20 @@ class CorsConfigurationTest extends TestCase
             ->assertNoContent()
             ->assertHeader('Access-Control-Allow-Origin', $origin);
     }
+
+    public function test_current_vercel_production_origin_is_allowed_for_api_preflight_requests(): void
+    {
+        $origin = 'https://real-eastate-project-two.vercel.app';
+        config(['cors.allowed_origins' => [$origin]]);
+
+        $response = $this->call('OPTIONS', '/api/properties', [], [], [], [
+            'HTTP_ORIGIN' => $origin,
+            'HTTP_ACCESS_CONTROL_REQUEST_METHOD' => 'GET',
+            'HTTP_ACCESS_CONTROL_REQUEST_HEADERS' => 'accept',
+        ]);
+
+        $response
+            ->assertNoContent()
+            ->assertHeader('Access-Control-Allow-Origin', $origin);
+    }
 }
