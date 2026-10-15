@@ -30,7 +30,7 @@ return [
             'driver' => 'mysql',
             'url' => env('DATABASE_URL'),
             'host' => env('DB_HOST', '127.0.0.1'),
-            'port' => (int) env('DB_PORT', '3306'), // (int) যোগ করা হয়েছে এরর ফিক্স করার জন্য
+            'port' => (int) env('DB_PORT', '3306'),
             'database' => env('DB_DATABASE', 'forge'),
             'username' => env('DB_USERNAME', 'forge'),
             'password' => env('DB_PASSWORD', ''),
@@ -42,8 +42,9 @@ return [
             'strict' => true,
             'engine' => null,
             'options' => extension_loaded('pdo_mysql') ? array_filter([
-                PDO::MYSQL_ATTR_SSL_CA => env('DB_SSL_CA') ?: null,
-                PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT => filter_var(env('DB_SSL_VERIFY_SERVER_CERT', 'true'), FILTER_VALIDATE_BOOLEAN),
+                // এখানে DB_SSL_CA না পেলে TIDB_SSL_CA চেক করবে, না পেলে ডিফল্ট পাথ নেবে
+                PDO::MYSQL_ATTR_SSL_CA => env('DB_SSL_CA', env('TIDB_SSL_CA', '/etc/secrets/ca.pem')),
+                PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT => filter_var(env('DB_SSL_VERIFY_SERVER_CERT', env('TIDB_SSL_VERIFY_SERVER_CERT', 'true')), FILTER_VALIDATE_BOOLEAN),
             ]) : [],
         ],
 
