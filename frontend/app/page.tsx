@@ -295,7 +295,7 @@ export default function Home() {
         {!loadingProperties && !propertyError && properties.length === 0 && (
           <p className={styles.statusMessage}>No homes match those filters.</p>
         )}
-        <div className={`${styles.propertyGrid} row g-4`}>
+        <div className={`${styles.propertyGrid} row g-2`}>
           {properties.map((property) => (
             <article
               className={`${styles.propertyCard} col-12 col-md-6 col-xl-4`}
